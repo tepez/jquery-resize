@@ -92,10 +92,7 @@
   // Return true if no name space is required or a name space is required
   // and it's one of given namespaces
   function namespaceMatch(namespaces) {  
-    if ( jq_resize.namespace && namespaces.indexOf(jq_resize.namespace) === -1 ) {
-      return false;
-    }
-    return true;
+    return jq_resize.namespace && namespaces.indexOf(jq_resize.namespace) >= 0;
   }
   
   // Event: resize event
@@ -142,7 +139,7 @@
     
       // short circuit if a custom namespace is required and it's not satisfied 
       if ( !namespaceMatch(namespaces) ) {
-        return;
+        return false;
       }
     
       // Since window has its own native 'resize' event, return false so that
@@ -167,19 +164,24 @@
     
     // Called only when the last 'resize' event callback is unbound per element.
     teardown: function( namespaces ) {
-    
-      // short circuit if a custom namespace is required and it's not satisfied 
-      if ( !namespaceMatch(namespaces) ) {
-        return;
-      }
-      
+
       // Since window has its own native 'resize' event, return false so that
       // jQuery will unbind the event using DOM methods. Since only 'window'
       // objects have a .setTimeout method, this should be a sufficient test.
       // Unless, of course, we're throttling the 'resize' event for window.
       if ( !jq_resize[ str_throttle ] && this[ str_setTimeout ] ) { return false; }
-      
+
       var elem = $(this);
+
+      // we can't just short-circuit on teardown, if namespace is not matched
+      // because than we might never remove elem from elems, e.g.
+      // el.on('resize')
+      // el.on('resize.ns');
+      // el.off('resize.ns');
+      // el.off('resize');      teardown is called here, without the namespace
+      if ( elems.index(elem) < 0 ) {
+        return false;
+      }
       
       // Remove this element from the list of internal elements to monitor.
       elems = elems.not( elem );
@@ -199,7 +201,7 @@
     
       // short circuit if a custom namespace is required and it's not satisfied 
       if ( !namespaceMatch(handleObj.namespace.split('.')) ) {
-        return;
+        return false;
       }
         
       // Since window has its own native 'resize' event, return false so that
@@ -226,7 +228,7 @@
         data.h = h !== undefined ? h : elem.height();
         
         old_handler.apply( this, arguments );
-      };
+      }
       
       // This may seem a little complicated, but it normalizes the special event
       // .add method between jQuery 1.4/1.4.1 and 1.4.2+
@@ -268,6 +270,6 @@
       
     }, jq_resize[ str_delay ] );
     
-  };
+  }
   
-})(jQuery,this);
+})(window.jQuery, window);
