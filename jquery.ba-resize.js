@@ -198,7 +198,7 @@
     add: function( handleObj ) {
     
       // short circuit if a custom namespace is required and it's not satisfied 
-      if ( !namespaceMatch(handleObj.namespace.split('.') ) {
+      if ( !namespaceMatch(handleObj.namespace.split('.')) ) {
         return;
       }
         
