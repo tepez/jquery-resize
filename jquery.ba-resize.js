@@ -89,6 +89,15 @@
   
   jq_resize[ str_throttle ] = true;
   
+  // Return true if no name space is required or a name space is required
+  // and it's one of given namespaces
+  function namespaceMatch(namespaces) {  
+    if ( jq_resize.namespace && namespaces.indexOf(jq_resize.namespace) === -1 ) {
+      return false;
+    }
+    return true;
+  }
+  
   // Event: resize event
   // 
   // Fired when an element's width or height changes. Because browsers only
@@ -129,7 +138,13 @@
   $.event.special[ str_resize ] = {
     
     // Called only when the first 'resize' event callback is bound per element.
-    setup: function() {
+    setup: function( data, namespaces ) {
+    
+      // short circuit if a custom namespace is required and it's not satisfied 
+      if ( !namespaceMatch(namespaces) ) {
+        return;
+      }
+    
       // Since window has its own native 'resize' event, return false so that
       // jQuery will bind the event using DOM methods. Since only 'window'
       // objects have a .setTimeout method, this should be a sufficient test.
@@ -151,7 +166,13 @@
     },
     
     // Called only when the last 'resize' event callback is unbound per element.
-    teardown: function() {
+    teardown: function( namespaces ) {
+    
+      // short circuit if a custom namespace is required and it's not satisfied 
+      if ( !namespaceMatch(namespaces) ) {
+        return;
+      }
+      
       // Since window has its own native 'resize' event, return false so that
       // jQuery will unbind the event using DOM methods. Since only 'window'
       // objects have a .setTimeout method, this should be a sufficient test.
@@ -175,6 +196,12 @@
     // Called every time a 'resize' event callback is bound per element (new in
     // jQuery 1.4).
     add: function( handleObj ) {
+    
+      // short circuit if a custom namespace is required and it's not satisfied 
+      if ( !namespaceMatch(handleObj.namespace.split('.') ) {
+        return;
+      }
+        
       // Since window has its own native 'resize' event, return false so that
       // jQuery doesn't modify the event object. Unless, of course, we're
       // throttling the 'resize' event for window.
