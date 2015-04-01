@@ -1,3 +1,26 @@
+## Custom fork
+
+Added support for custom namespace, e.g.
+
+```js
+
+jQuery.resize.namespace = 'myNs';
+
+// these will work as usual
+el.on('resize.myNs', ...);
+el.off('resize.myNs', ...);
+
+el.on('resize.myNs.anotherNs', ...);
+el.off('resize.myNs.anotherNs', ...);
+
+// these will do nothing
+el.resize(...);
+el.on('resize', ...);
+el.off('resize', ...);
+
+```
+
+
 # jQuery resize event #
 [http://benalman.com/projects/jquery-resize-plugin/](http://benalman.com/projects/jquery-resize-plugin/)
 
