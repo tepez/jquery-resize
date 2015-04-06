@@ -60,7 +60,7 @@
     
     // Reused strings.
     str_setTimeout = 'setTimeout',
-    str_resize = 'resize',
+    str_resize = 'tpResize',
     str_data = str_resize + '-special-event',
     str_delay = 'delay',
     str_throttle = 'throttleWindow';

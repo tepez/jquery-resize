@@ -1,3 +1,8 @@
+## Custom fork
+
+Change event name from `resize` to `tpResize`.
+Otherwise, this event don't play nicely with other components that use the resize event, e.g. select2.
+
 # jQuery resize event #
 [http://benalman.com/projects/jquery-resize-plugin/](http://benalman.com/projects/jquery-resize-plugin/)
 
